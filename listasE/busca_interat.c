@@ -15,11 +15,21 @@ celula *busca(celula *le, int x){
             return atual; //retorna o no procurado
         }
     atual = atual->prox; //segue para o proximo
-
     }
 
     return NULL;
 }
+celula *busca_rec(celula *le, int x){
+    if(le ==NULL){ //se for vazio, retorna null
+        return NULL;
+    }
+    if(le->dado == x){
+        return le; //condição de parada, retorna o no que x
+    }
+    busca_rec(le->prox, x);
+}
+
+
 
 // int main() {
 //     // Exemplo simples para testar o código
