@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h> // Para funções de alocação de memória
 
@@ -7,35 +6,32 @@ typedef struct celula {
     int dado;
     struct celula *prox;
 } celula;
+void remove_depois(celula *p){
 
-// Função que remove o elemento imediatamente após p
-void remove_depois(celula *p) {
-    if (p == NULL || p->prox == NULL) {
-        // Não há elemento para remover
-        return;
-    }
-    
-    celula *removido = p->prox; // Nó a ser removido
-    p->prox = removido->prox;  // Ajusta o ponteiro para "pular" o nó removido
-    free(removido);            // Libera a memória do nó removido
+if(p == NULL || p->prox ==NULL){
+    return;
 }
 
-// Função que remove a primeira ocorrência de x na lista
-void remove_elemento(celula *le, int x) {
-    celula *anterior = le;
-    celula *atual = le->prox;
+celula *removido = p->prox; //no a ser removido 
+p->prox = removido->prox;
+free(removido);
 
-    // Percorre a lista procurando o valor x
-    while (atual != NULL && atual->dado != x) {
+}
+void remove_elemento(celula *p, int x){
+
+    celula *anterior = p;
+    celula *atual = p ->prox;
+
+    while(atual != NULL && atual->dado != x){
         anterior = atual;
         atual = atual->prox;
     }
-
-    if (atual != NULL) { // Se encontrou x
-        anterior->prox = atual->prox; // Ajusta os ponteiros
-        free(atual);                  // Libera o nó que contém x
+    if(atual!=NULL){
+        anterior->prox = atual->prox; //ajusta os ponteiros
+        free(atual);
     }
 }
+
 
 // Função que remove todas as ocorrências de x na lista
 void remove_todos_elementos(celula *le, int x) {
