@@ -48,3 +48,32 @@ return busca_binaria(v, m+1, r, k);
 // terceira: n^3 
 // ...
 // f(n/ 2^ k)   
+
+
+#define key(a) (a.chave)
+typedef int Key;
+
+
+typedef struct data{
+    Key chave;
+    char info [100];
+}Item;
+
+int busca_binaria(Item *v, int l, int r, Key k){
+    int m = (l+r)/2;
+
+
+    if(k == key(v[m])) return m;
+
+    if(k<key(v[m])){
+        return busca_binaria(v, l, m-1, k);
+    }
+
+    return busca_binaria(v, m+1, r, k);
+
+
+}
+
+
+
+
