@@ -5,63 +5,55 @@ typedef struct {
     long long S;  // código da semente
     int N;        // nota da semente
 } Semente;
+void exch(void *a, void *b){
+    Semente *x = (Semente *) a;
+    Semente *y = (Semente *) b;
+    Semente temp = *x; 
+    *x = *y; 
+    *y = temp;
+}
+int partition(Semente *v, int l, int r){
+    int i = l-1, j = r;
+    Semente pivo = v[r];
 
-// Função de comparação para o heap: menor nota primeiro, se empatar, menor código
-int compare(const void *a, const void *b) {
-    Semente *s1 = (Semente*)a;
-    Semente *s2 = (Semente*)b;
+    while(i<j){
+        while ((v[++i].S < pivo.S) || (v[i].S == pivo.S && v[i].N < pivo.N));
 
-    // Se a nota for diferente, ordena pela nota
-    if (s1->N != s2->N)
-        return s1->N - s2->N;
-    // Caso contrário, ordena pelo código da semente
-    return s1->S - s2->S;
+        // Retrocede o índice 'j' enquanto os elementos estão na ordem correta
+        while (j > l && ((v[--j].S > pivo.S) || (v[j].S == pivo.S && v[j].N > pivo.N)));
+
+        if(i<j) exch(&v[i],&v[j]); 
+        //desempate
+
+        // while (j > l && ((v[--j].S > pivo.S) || (v[j].S == pivo.S && v[j].N > pivo.N)));
+
+    }
+    exch(&v[i], &v[r]); 
+    return i; 
+}
+
+void quick_sort(Semente *v, int l, int r){
+    if(r<=l) return; 
+
+    int p = partition(v, l, r);
+    quick_sort(v, l, p-1);
+    quick_sort(v, p+1, r);
+
 }
 
 int main() {
-    int k;
-    scanf("%d", &k);
+    Semente v[] = {{10, 90}, {20, 85}, {15, 88}, {5, 80}, {30, 80}};
 
-    // Definindo a capacidade máxima do vetor de sementes
-    Semente *seeds = malloc(k * sizeof(Semente));
-    if (seeds == NULL) {
-        fprintf(stderr, "Erro ao alocar memória.\n");
-        return 1;
+    int r =sizeof(v) / sizeof(v[0]);
+
+    quick_sort(v, 0, r-1); 
+
+    int k =4;
+
+    for(int i =0; i<k; i++){
+        printf("Semente com menor código: S = %lld, N = %d\n", v[i].S, v[i].N);
     }
 
-    int count = 0;
-
-    while (1) {
-        Semente s;
-        int result = scanf("%lld %d", &s.S, &s.N);
-        if (result == EOF) break; // Chegou ao final dos dados de entrada
-
-        if (count < k) {
-            seeds[count++] = s;
-            // Quando o número de sementes for menor que k, não precisa fazer mais nada
-        } else {
-            // Se o número de sementes for k, precisamos verificar a semente atual
-            // Inserir a nova semente apenas se for melhor do que a pior no heap
-            if (s.N < seeds[k-1].N || (s.N == seeds[k-1].N && s.S < seeds[k-1].S)) {
-                seeds[k-1] = s;
-            }
-        }
-
-        // Ordena o array após cada inserção
-        qsort(seeds, count < k ? count : k, sizeof(Semente), compare);
-    }
-
-    // Ordena pela semente (código) antes de imprimir
-    qsort(seeds, k, sizeof(Semente), compare);
-
-    // Imprimir as k melhores sementes
-    for (int i = 0; i < k; i++) {
-        printf("%lld %d\n", seeds[i].S, seeds[i].N);
-    }
-
-    // Libera a memória alocada
-    free(seeds);
 
     return 0;
-}
- 
+} 
