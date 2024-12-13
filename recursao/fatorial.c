@@ -9,7 +9,7 @@ int fat(int n) {
 }
 
 int main() {
-    int x = fat(3);
+    int x = fat(4);
     printf("Fatorial de 3 é: %d\n", x);
     return 0;
 }
