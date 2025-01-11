@@ -1,18 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 // Define o tipo de item que será armazenado nos nós da árvore
 typedef int Item;
 
-typedef struct No{
+// Estrutura do nó da árvore
+typedef struct No {
     Item item;
-    No *pai;
-    No *esq, *dir;
+    struct No *pai;
+    struct No *esq, *dir;
+} No;
 
-}No;
-
-No *criar_arvore(Item x, No *pai, No* esq, No *dir){
+// Função para criar um nó da árvore
+No *criar_arvore(Item x, No *pai, No *esq, No *dir) {
     No *raiz = malloc(sizeof(No));
     raiz->pai = pai;
     raiz->esq = esq;
@@ -21,67 +21,50 @@ No *criar_arvore(Item x, No *pai, No* esq, No *dir){
     return raiz;
 }
 
-No *avo(No *elemento){
-    if(elemento != NULL && elemento->pai != NULL) return elemento->pai->pai;
+// Função que cria o torneio e retorna a raiz da árvore
+No *torneio(int *v, int l, int r) {
+    if (l == r) 
+        return criar_arvore(v[l], NULL, NULL, NULL);
 
-    return NULL;
+    int m = (l + r) / 2;
 
+    // Cria os nós esquerdo e direito recursivamente
+    No *esq = torneio(v, l, m);
+    No *dir = torneio(v, m + 1, r);
+
+    // Define o pai dos nós esquerdo e direito
+    esq->pai = dir->pai = criar_arvore(esq->item > dir->item ? esq->item : dir->item, NULL, esq, dir);
+
+    return esq->pai;
 }
 
-No *tio(No *elemento){
-    No *vovo = avo(elemento);
-    if(vovo == NULL) return NULL;
-    if(vovo->dir == elemento->pai) return vovo->esq;
-
-    return vovo->dir;
+// Função para calcular o número de nós da árvore
+int numero_nos(No *elemento) {
+    if (elemento == NULL) return 0;
+    return 1 + numero_nos(elemento->esq) + numero_nos(elemento->dir);
 }
 
-No *irmao(No *elemento){
-    if((elemento != NULL) && (elemento->pai != NULL)){
-        if(elemento->pai->esq == elemento) return elemento->pai->dir;
-        else return elemento->pai->esq;
-    }
-
-    return NULL;
+// Função para calcular a altura da árvore
+int altura(No *elemento) {
+    if (elemento == NULL) return 0;
+    int h_esq = altura(elemento->esq);
+    int h_dir = altura(elemento->dir);
+    return 1 + (h_esq > h_dir ? h_esq : h_dir);
 }
 
-No *busca_linear(No *elemento, Item x){
+int main() {
+    int v[8] = {5, 1, 7, 4, 3, 4, 6, 8}; 
 
-    if(elemento ==NULL || elemento->item == x) return elemento; 
+    // Cria a árvore de torneio
+    No *teste = torneio(v, 0, 7);
 
-    No *busca_esquerda = busca_linear(elemento->esq, x);
-    if(busca_esquerda!=NULL) return busca_esquerda;
+    // Imprime o vencedor e os semifinalistas
+    printf("VENCEDOR: %d\n", teste->item);
+    printf("SEMIFINAL: %d X %d\n", teste->esq->item, teste->dir->item);
 
-    return busca_linear(elemento->dir, x);
+    // Exibe o número de nós e a altura da árvore
+    printf("NÚMERO DE NÓS: %d\n", numero_nos(teste));
+    printf("ALTURA DA ÁRVORE: %d\n", altura(teste));
 
-}
-
-int numero_nos(No *elemento){
-    if(elemento == NULL) return 0; 
-
-    return 1 + numero_nos(elemento->esq) + numero_nos(elemento->dir); 
-}
-
-int altura(No *elemento){
-    if(elemento==NULL) return 0; 
-    int h_esq =  1 + altura(elemento->esq);
-    int h_dir= 1+ altura(elemento->dir);
-
-    return 1 + ( h_esq>h_dir ? h_esq : h_dir);
-}
-
-
-No *torneio(int *v, int l, int r){
-    if(l==r) criar_arvore(v[l],NULL, NULL, NULL);
-
-    int m = (l+r)/2;
-
-    No *esq = torneio(v, l, m); 
-    No *dir= torneio(v, m+1, r);
-
-
-    int valor = esq->item > dir->item ? esq->item : dir->item;
-
-    return criar_arvore(valor, NULL, esq, dir);
-
+    return 0;
 }
