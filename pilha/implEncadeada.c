@@ -21,7 +21,7 @@ typedef struct pilha {
     No *prox;       // Ponteiro para o topo da pilha
     No *ultimo;     // Ponteiro para o último nó (opcional)
     int topo;  // Contador de itens na pilha
-} pilha;
+} pilha; //cabeca 
 
 
 pilha* criar_pilha(int maxN){
