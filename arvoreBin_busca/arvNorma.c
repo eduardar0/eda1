@@ -92,10 +92,48 @@ No *sucessor(No *raiz){
 
 }
 
-
 No *minimo(No *raiz){
 
     if(raiz->esq == NULL) return minimo(raiz->esq);
+}
+
+No *ancestral_direita(No *no){
+    if(no == NULL) return NULL;
+    //nao tenho pai  = nao ter ansestral, ou  ser dascendente esquerdo 
+
+    if(no->pai == NULL || no->pai->esq == no) return no->pai;
+
+    // Caso 1: Se não tem pai (é a raiz) ou é filho à esquerda, o pai é o ancestral à direita
+
+    return ancestral_direita(no->pai);    
+}
+
+
+No *sucessor(No *no){
+    //maior imediato dela 
+    //como acha? sempre maior - vaip direita 
+    //o menor dos maiores, vai para a direita e esquerda ate achar null 
+    //se nao tiver sucessor a diretia, primeiro ancestral a direita 
+    if(no->dir != NULL) return minimo(no->dir);
+
+    return ancestral_direita(no);
+
+}
+
+No *remocao(No *no, Item x){
+    //se não tiver filho nao precisa fazer nada 
+    // Caso 1: Nó folha (sem filhos)
+    if (no->dir == NULL && no->esq == NULL) {
+        free(no);
+        return NULL;
+    }
+    //se tiver so um filho, o avô assume no lugar do filho 
+    //se eu for filho a esquerda, meu pai assume meu filho a esquerda
+
+    if(no->item < x){
+        no->esq = remocao(no->esq, x);
+    }
+
 }
 
 int main(){
