@@ -1,0 +1,86 @@
+#include <stdio.h>
+
+#define less(A, B) ((A) < (B))
+#define exch(A, B) { Item t = A; A = B; B = t; }
+
+
+//PQinit : criar uma fila de prioridades
+//PQempty : testar se ta vazia 
+//PQinsert : interir uma nova chave 
+//PQdelmax : retornar e excluir a chave com maior prioridade 
+#include <stdlib.h>
+//Static: disponivel apenas no arquivo 
+
+typedef int Item;
+
+static Item *pq; 
+static int N; 
+void PQinit(int maxN){
+    pq = (Item*) malloc(sizeof(Item) * (maxN + 1));
+    N=0;//quantos elemtos tem dentro da fila    
+    }
+int PQempty(){
+    return N==0;
+}
+
+void PQinsert(Item V){
+    //adicionar no fim 
+    pq[++N] = V; 
+    fixUP(N);
+}
+
+//função fixup 
+void fixUP(int k) {
+    //verifica se nao é raiz e maior que o pai
+    //sek = 1, significa qu ele é raiz ne , primeiro elemnto 
+    while (k > 1 && less(pq[k / 2], pq[k])) { 
+        exch(pq[k], pq[k / 2]);
+        k = k / 2;
+        //atualizar K, ele pega o lugar do pai 
+    }
+}
+// k = indice do elemento que vai ser fundado 
+//n = quatidade de elemtnos
+void fixdDown(int k, int n)
+    //enquanto tiver filho
+{
+    //se eu sou o K meu filho a esquerda é o 2*k
+    //se ele for menor que o final do vetor, ent ele existe  
+    while(2*k <= N){
+        int j = 2*k; //filho a esquerda 
+        //tenho que verificar a prioridade do filho a direita 
+        if(j<n, less(pq[j], pq[j+1])) j++;
+        //se o da direita for mamaior, tem mais prioridade 
+
+        //caso o item a ser removido pq[k] ja for maior que seu filho, para 
+        if(!less(pq[k], pq[j])) break;
+
+        //senao afunda 
+        exch(pq[k], pq[j]);
+        //ate a cahr um no folha 
+
+    }
+    //o(logN)
+
+
+}
+//Complexidade O(LogN)
+
+Item PQdeletmax(){
+    //primeiro troca o topo com o ultimo 
+
+    exch(pq[1] , pq[N]);
+
+    //reposiciona 
+    fixdDown(1, N-1);
+    //desde a raiz ate o ultim elemnto menos 1 por qu eeu tirei a raiz 
+    return pq[N--];
+    //retornar o removio 
+    //decrementar 
+
+}
+
+
+
+
+

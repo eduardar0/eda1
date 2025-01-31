@@ -28,11 +28,6 @@ void enfilerar(Fila *f, Item x){
     }
 
 }
-
-int vazio(Fila *f){
-    return f->ultimo == f->primeiro;
-}
-
 Item desenfilera(Fila *f) {
     if (!vazio(f)) {
         return f->dado[f->primeiro++];
@@ -42,6 +37,17 @@ Item desenfilera(Fila *f) {
     }
 }
 
+
+int vazio(Fila *f){
+    return f->ultimo == f->primeiro;
+}
+//caso a fila esteja cheia e haja espaços vazios é possivel redimensionar a fila 
+void redimensiona1(Fila *f){
+
+    f->tam *= 2;
+    f->dado = realloc(f->dado, f->tam * sizeof(Item));
+    //acho que nao serve aqui por que a fila é circular 
+}
 
 void imprime(Fila *f){
     printf("Primeiro elemento = %d, ultimo elemento = %d \n", f->primeiro, f->ultimo );
@@ -53,14 +59,6 @@ void imprime(Fila *f){
 
     }
 
-}
-
-//caso a fila esteja cheia e haja espaços vazios é possivel redimensionar a fila 
-void redimensiona1(Fila *f){
-
-    f->tam *= 2;
-    f->dado = realloc(f->dado, f->tam * sizeof(Item));
-    //acho que nao serve aqui por que a fila é circular 
 }
 
 
